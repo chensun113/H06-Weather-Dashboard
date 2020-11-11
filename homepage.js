@@ -152,3 +152,20 @@ var getHistoryCity = function (city) {
     }
   });
 };
+function save(i){
+  console.log("save function begin "+localStorage.getItem("History_Count_Index"));
+  if (localStorage.getItem("History_Count_Index")==null) {
+    localStorage.setItem("History_Count_Index",historyCount);
+  }else{
+    historyCount=localStorage.getItem("History_Count_Index");
+
+  }
+  //save triigered we save a flag show we have memory data
+  var triggerflag = "true";
+  localStorage.setItem("flag",triggerflag);
+ historyCount++;
+  var dataToSave=i
+  localStorage.setItem(localStorage.getItem("History_Count_Index"),dataToSave);
+  localStorage.setItem("History_Count_Index",historyCount);
+  //localStorage.clear();
+}
