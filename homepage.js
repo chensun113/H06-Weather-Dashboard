@@ -169,3 +169,22 @@ function save(i){
   localStorage.setItem("History_Count_Index",historyCount);
   //localStorage.clear();
 }
+show()
+function show(){
+  if (localStorage.getItem("flag")=="true") {
+      //console.log("data in storage");  
+      var length = localStorage.getItem("History_Count_Index");
+      console.log(length);
+      for (let i = 0; i < length; i++) {
+       var dataToShow = localStorage.getItem(i);
+       console.log(dataToShow);
+       var historyButton= document.createElement('button');
+       historyButton.setAttribute("cityName",dataToShow);
+       historyButton.setAttribute("id",dataToShow);
+       historyButton.setAttribute("class","btn");
+       historyButton.textContent=dataToShow;
+       languageButtonsEl.appendChild(historyButton);
+        
+      }
+
+     }
