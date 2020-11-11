@@ -7,10 +7,8 @@ var clearButtonEl = document.querySelector('#clearbutton')
 var key= "c460dd5c15d9df993585c0bf2401e2ca";//create account webpage
 var UVIndex;
 var historyCount=0;
-var getCityStatus = function (city) {
-  var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+key;
-//get API 
-  var formSubmitHandler = function (event) {
+//userFormEL submit eventlisener 
+var formSubmitHandler = function (event) {
   event.preventDefault();
 
   var cityname = nameInputEl.value.trim();//name input.value 保留文字
@@ -34,6 +32,11 @@ var buttonClickHandler = function (event) {
     repoContainerEl.textContent = '';
   }
 };
+
+//预测内容
+var getCityStatus = function (city) {
+  var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+key;
+//get API 
   fetch(apiUrl)//拿到API，then开始response function，回应「」
   //OK is boolean 值
     .then(function (response) {
@@ -66,6 +69,69 @@ function getUnIndex_1(data){
   UVIndex=data;
   return data;
 }
+
+
+
+// history
+var getHistoryCity = function (city) {
+  var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+key;
+  //console.log(city);
+  fetch(apiUrl).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        displayStatus(data, city);
+      });
+    } else {
+      alert('Error: ' + response.statusText);
+    }
+  });
+};
+
+function clear(){
+  localStorage.clear();
+  console.log("triggered")
+  location.reload();
+}
+
+function save(i){
+  console.log("save function begin "+localStorage.getItem("History_Count_Index"));
+  if (localStorage.getItem("History_Count_Index")==null) {
+    localStorage.setItem("History_Count_Index",historyCount);
+  }else{
+    historyCount=localStorage.getItem("History_Count_Index");
+
+  }
+  //save triigered we save a flag show we have memory data
+  var triggerflag = "true";
+  localStorage.setItem("flag",triggerflag);
+ historyCount++;
+  var dataToSave=i
+  localStorage.setItem(localStorage.getItem("History_Count_Index"),dataToSave);
+  localStorage.setItem("History_Count_Index",historyCount);
+  //localStorage.clear();
+}
+show()
+function show(){
+  if (localStorage.getItem("flag")=="true") {
+      //console.log("data in storage");  
+      var length = localStorage.getItem("History_Count_Index");
+      console.log(length);
+      for (let i = 0; i < length; i++) {
+       var dataToShow = localStorage.getItem(i);
+       console.log(dataToShow);
+       var historyButton= document.createElement('button');
+       historyButton.setAttribute("cityName",dataToShow);
+       historyButton.setAttribute("id",dataToShow);
+       historyButton.setAttribute("class","btn");
+       historyButton.textContent=dataToShow;
+       languageButtonsEl.appendChild(historyButton);
+        
+      }
+
+     }
+// localStorage.clear();
+}
+//显示部分 主体function//data,city
 var displayStatus = function (repos, searchTerm) {
   //40 5 day 3h change data. 3*7=21h 5weilai 
   //i +1 Hour+3, 6 times data get 
@@ -138,53 +204,8 @@ var cityName=repos.city.name;//data.city.name: london;
   }
   
 };
-// history
-var getHistoryCity = function (city) {
-  var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+key;
-  //console.log(city);
-  fetch(apiUrl).then(function (response) {
-    if (response.ok) {
-      response.json().then(function (data) {
-        displayStatus(data, city);
-      });
-    } else {
-      alert('Error: ' + response.statusText);
-    }
-  });
-};
-function save(i){
-  console.log("save function begin "+localStorage.getItem("History_Count_Index"));
-  if (localStorage.getItem("History_Count_Index")==null) {
-    localStorage.setItem("History_Count_Index",historyCount);
-  }else{
-    historyCount=localStorage.getItem("History_Count_Index");
-
-  }
-  //save triigered we save a flag show we have memory data
-  var triggerflag = "true";
-  localStorage.setItem("flag",triggerflag);
- historyCount++;
-  var dataToSave=i
-  localStorage.setItem(localStorage.getItem("History_Count_Index"),dataToSave);
-  localStorage.setItem("History_Count_Index",historyCount);
-  //localStorage.clear();
-}
-show()
-function show(){
-  if (localStorage.getItem("flag")=="true") {
-      //console.log("data in storage");  
-      var length = localStorage.getItem("History_Count_Index");
-      console.log(length);
-      for (let i = 0; i < length; i++) {
-       var dataToShow = localStorage.getItem(i);
-       console.log(dataToShow);
-       var historyButton= document.createElement('button');
-       historyButton.setAttribute("cityName",dataToShow);
-       historyButton.setAttribute("id",dataToShow);
-       historyButton.setAttribute("class","btn");
-       historyButton.textContent=dataToShow;
-       languageButtonsEl.appendChild(historyButton);
-        
-      }
-
-     }
+//文本框： input+button
+//button： click， form： submit，；
+userFormEl.addEventListener('submit', formSubmitHandler);//function
+languageButtonsEl.addEventListener('click', buttonClickHandler);//area
+clearButtonEl.addEventListener('click',clear);
