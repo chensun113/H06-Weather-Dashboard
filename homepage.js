@@ -10,6 +10,30 @@ var historyCount=0;
 var getCityStatus = function (city) {
   var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+key;
 //get API 
+  var formSubmitHandler = function (event) {
+  event.preventDefault();
+
+  var cityname = nameInputEl.value.trim();//name input.value 保留文字
+
+  if (cityname) {
+    getCityStatus(cityname);//function
+
+    repoContainerEl.textContent = '';
+    nameInputEl.value = '';
+  } else {
+    alert('Please enter a cityname');
+  }
+};
+//cilck function
+var buttonClickHandler = function (event) {
+  var city = event.target.getAttribute('cityName');
+   
+  if (city) {
+    getHistoryCity(city);//get city name
+//show
+    repoContainerEl.textContent = '';
+  }
+};
   fetch(apiUrl)//拿到API，then开始response function，回应「」
   //OK is boolean 值
     .then(function (response) {
