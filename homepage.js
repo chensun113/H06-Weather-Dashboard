@@ -138,3 +138,17 @@ var cityName=repos.city.name;//data.city.name: london;
   }
   
 };
+// history
+var getHistoryCity = function (city) {
+  var apiUrl = "http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+key;
+  //console.log(city);
+  fetch(apiUrl).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        displayStatus(data, city);
+      });
+    } else {
+      alert('Error: ' + response.statusText);
+    }
+  });
+};
